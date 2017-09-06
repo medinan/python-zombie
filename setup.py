@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages, Command
 import sys
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 tests_require = []
 
 if sys.version_info < (2, 7):
@@ -29,12 +29,12 @@ class Tox(Command):
 # determine requirements
 #
 setup(
-    name="zombie",
+    name="zombie-mgh",
     version=__version__,
     include_package_data=True,
-    author="Ryan Petrello",
-    author_email="ryan [at] ryanpetrello [dot] com",
-    url="https://github.com/ryanpetrello/python-zombie",
+    author="Clemens Radl",
+    author_email="clemens.radl@mgh.de",
+    url="https://github.com/rotula/python-zombie",
     description="A Python driver for Zombie.js",
     long_description=open('README.rst').read(),
     packages=find_packages(exclude=['ez_setup', 'tests']),

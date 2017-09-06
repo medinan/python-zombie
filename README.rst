@@ -1,5 +1,6 @@
-A Python driver for `Zombie.js <http://zombie.labnotes.org/>`_, a headless browser
-powered by `node.js <http://nodejs.org/>`_. ::
+A Python driver for `Zombie.js <http://zombie.labnotes.org/>`_, a headless
+browser powered by `node.js <http://nodejs.org/>`_. This fork (zombie-mgh) was
+mainly created to get it running under Windows. ::
 
     from zombie import Browser
     b = Browser()
@@ -9,11 +10,6 @@ powered by `node.js <http://nodejs.org/>`_. ::
     brew install node
     curl https://www.npmjs.org/install.sh | sh
     npm install zombie
-
-.. _travis: http://travis-ci.org/ryanpetrello/python-zombie
-.. |travis| image:: https://secure.travis-ci.org/ryanpetrello/python-zombie.png
-
-|travis|_
 
 Installing
 ==========

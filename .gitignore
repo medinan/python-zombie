@@ -12,3 +12,5 @@ include
 lib
 share
 node_modules
+*~
+._*
