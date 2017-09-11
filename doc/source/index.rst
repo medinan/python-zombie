@@ -7,7 +7,9 @@ Welcome to zombie's documentation!
 ========================================
 
 Zombie is a Python driver for Zombie.js (http://zombie.labnotes.org/), a headless browser
-powered by node.js (http://nodejs.org)::
+powered by node.js (http://nodejs.org).
+This fork (python-zombie-mgh) was primarily created to get it to work
+under MS Windows.::
 
     from zombie import Browser
     browser = Browser()
@@ -25,6 +27,9 @@ powered by node.js (http://nodejs.org)::
 
     assert browser.success
     assert browser.text("title") == "Welcome to Brains Depot"
+
+NB: You need to have zombie.js installed properly, so that it can
+be required by the JS server code (e. g., set $NODE_PATH correctly).
 
 As much as possible, the methods of :class:`zombie.browser.Browser` are
 analogous to the methods of Zombie.js' ``Browser`` class

@@ -73,11 +73,17 @@ class ZombieProxyServer(object):
         a zombie.js Browser object, and returns the results.
 
         :param socket: a (random, by default) filepath representing the
-                       intended TCP socket location
+                       intended TCP socket location, or (on Windows) a tuple
+                       containing a host and a port name (defaults to
+                       ("127.0.0.1", 40140).
         :param wait: when True, wait until the node.js subprocess is responsive
                     via the specified TCP socket.
         """
-        socket = socket or '/tmp/zombie-%s.sock' % random.randint(0, 10000)
+        # no file based unix socket on windows
+        if sys.platform == "win32":
+            socket = socket or ("127.0.0.1", 40140)
+        else:
+            socket = socket or '/tmp/zombie-%s.sock' % random.randint(0, 10000)
 
         self.socket = socket
 
@@ -90,7 +96,14 @@ class ZombieProxyServer(object):
         # evaluates it as Javascript, and passes the eval'ed
         # input to a Zombie.js Browser object.
         #
-        args = ['env', 'node', proxy_path, self.socket]
+        if sys.platform=="win32":
+            # no env on windows,
+            # just make sure that node is on the path
+            # also no Unix file socket on windows, thus
+            # only the port from the INET socket given as argument
+            args = ['node', proxy_path, str(self.socket[1])]
+        else:
+            args = ['env', 'node', proxy_path, self.socket]
         self.child = subprocess.Popen(
             args,
             stdin=subprocess.PIPE,
@@ -127,6 +140,8 @@ def __kill_node_processes__():  # pragma: nocover
             instance.child.kill()
 
         # Cleanup the closed socket
-        if path.exists(instance.socket):
-            from os import remove
-            remove(instance.socket)
+        # no file based UNIX socket on Windows
+        if sys.platform != "win32":
+            if path.exists(instance.socket):
+                from os import remove
+                remove(instance.socket)

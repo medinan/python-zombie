@@ -1,3 +1,4 @@
+import sys
 import contextlib
 import socket
 
@@ -21,6 +22,17 @@ def encode(obj):
         return obj.__json__()
     return dumps(obj)
 
+def encode_arg(obj):
+    """
+    Special treatment for arguments inside a JavaScript call.
+
+    Undefined values become "None"/"null" in a JSON environment,
+    but in a JavaScript call they need to be "undefined".
+    """
+    if obj is None:
+        return "undefined"
+    else:
+        return encode(obj)
 
 def encode_args(args, extra=False):
     """
@@ -29,7 +41,7 @@ def encode_args(args, extra=False):
     if not args:
         return ''
 
-    methodargs = ', '.join([encode(a) for a in args])
+    methodargs = ', '.join([encode_arg(a) for a in args])
     if extra:
         methodargs += ', '
 
@@ -89,7 +101,11 @@ class ZombieServerConnection(object):
         return response
 
     def _open_connection(self):
-        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        # no file based Unix sockets on windows
+        if sys.platform == "win32":
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        else:
+            sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.connect(self.__socket_address)
         return contextlib.closing(sock)
 
@@ -143,7 +159,9 @@ class ZombieProxyClient(object):
     def _handle_response(self, response):
         errno, result = decode(response)
         if errno == 1:
-            raise NodeError(result)
+            # @@@experimental:
+            # ignore JavaScript errors
+            print("Skipping NodeError")
         return result
 
     def json(self, js, args=None):
