@@ -1,5 +1,6 @@
 var net = require('net');
 var Browser = require('zombie');
+Browser.waitDuration = '30s';
 
 // Defaults
 var ping = 'pong'
